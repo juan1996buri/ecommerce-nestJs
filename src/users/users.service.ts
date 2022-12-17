@@ -32,7 +32,14 @@ export class UsersService {
     return usersAll;
   }
 
-  async findOne(id: number) {
+  async findOne(email: string) {
+    const user = await this.userRepository.findOneBy({ email });
+    if (!user) {
+      throw new NotFoundException('User Not Found');
+    }
+    return user;
+  }
+  async findUserById(id: number) {
     const user = await this.userRepository.findOneBy({ id });
     if (!user) {
       throw new NotFoundException('User Not Found');
@@ -41,13 +48,13 @@ export class UsersService {
   }
 
   async update(updateUserDto: UpdateUserDto) {
-    const oldUser = await this.findOne(updateUserDto.id);
+    const oldUser = await this.findOne(updateUserDto.email);
     const newUser = Object.assign(oldUser, updateUserDto);
     return await this.userRepository.save(newUser);
   }
 
-  async remove(id: number) {
-    const user = await this.findOne(id);
+  async remove(email: string) {
+    const user = await this.findOne(email);
     await this.userRepository.remove(user);
   }
 }

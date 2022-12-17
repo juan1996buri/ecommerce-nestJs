@@ -1,9 +1,16 @@
-import { Controller, Get, Post, Body, Param, Delete } from '@nestjs/common';
+import {
+  Post,
+  Body,
+  Param,
+  Delete,
+  Put,
+  HttpStatus,
+  Controller,
+  Get,
+  Query,
+} from '@nestjs/common';
 import { ProductService } from './product.service';
-import { CreateProductDto } from './dto/create-product.dto';
-import { UpdateProductDto } from './dto/update-product.dto';
-import { HttpStatus } from '@nestjs/common/enums';
-import { Put } from '@nestjs/common/decorators';
+import { CreateProductDto, PaginationQueryDto, UpdateProductDto } from './dto';
 
 @Controller('product')
 export class ProductController {
@@ -15,8 +22,10 @@ export class ProductController {
   }
 
   @Get()
-  async findAll() {
-    const products = await this.productService.findAll();
+  async findAll(@Query() pagination: PaginationQueryDto) {
+    pagination.limit = pagination.limit > 100 ? 100 : pagination.limit;
+    pagination.route = `http://localhost:4000/product?category=${pagination.category}`;
+    const products = await this.productService.findAll(pagination);
     return {
       statusCode: HttpStatus.OK,
       message: 'products fetched successfully',

@@ -3,9 +3,10 @@ import { NotFoundException } from '@nestjs/common/exceptions';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Category } from 'src/category/entities/category.entity';
 import { Repository } from 'typeorm';
-import { CreateProductDto } from './dto/create-product.dto';
-import { UpdateProductDto } from './dto/update-product.dto';
+import { CreateProductDto, PaginationQueryDto, UpdateProductDto } from './dto';
 import { Product } from './entities/product.entity';
+
+import { paginate } from 'nestjs-typeorm-paginate';
 
 @Injectable()
 export class ProductService {
@@ -24,12 +25,13 @@ export class ProductService {
     return await this.productRepository.save(newProduct);
   }
 
-  async findAll() {
-    const allProducts = await this.productRepository.find();
-    if (allProducts.length <= 0) {
-      throw new NotFoundException('Products Not Found');
-    }
-    return allProducts;
+  async findAll(pagination: PaginationQueryDto) {
+    const queryBuilder = this.productRepository
+      .createQueryBuilder('product')
+      .innerJoinAndSelect('product.category', 'category')
+      .where('category.name LIKE :name', { name: pagination.category });
+    queryBuilder.orderBy('product.name', 'ASC');
+    return paginate<Product>(queryBuilder, pagination);
   }
 
   async findOne(id: number) {

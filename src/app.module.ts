@@ -12,6 +12,7 @@ import { UserDetailsModule } from './user-details/user-details.module';
 import { OrderDetailsModule } from './order-details/order-details.module';
 import { FavoritesModule } from './favorites/favorites.module';
 import { ViewsModule } from './views/views.module';
+import { AuthModule } from './auth/auth.module';
 
 @Module({
   imports: [
@@ -35,6 +36,7 @@ import { ViewsModule } from './views/views.module';
     OrderDetailsModule,
     FavoritesModule,
     ViewsModule,
+    AuthModule,
   ],
   controllers: [AppController],
   providers: [AppService],

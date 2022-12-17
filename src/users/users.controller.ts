@@ -36,9 +36,9 @@ export class UsersController {
     };
   }
 
-  @Get(':id')
-  async findOne(@Param('id') id: number) {
-    const user = await this.usersService.findOne(id);
+  @Get(':email')
+  async findOne(@Param('email') email: string) {
+    const user = await this.usersService.findOne(email);
     return {
       statusCode: HttpStatus.OK,
       message: 'user fetched successfull',
@@ -56,9 +56,9 @@ export class UsersController {
     };
   }
 
-  @Delete(':id')
-  async remove(@Param('id') id: number) {
-    await this.usersService.remove(id);
+  @Delete(':email')
+  async remove(@Param('email') email: string) {
+    await this.usersService.remove(email);
     return {
       statusCode: HttpStatus.OK,
       message: 'user deleted successfull',
