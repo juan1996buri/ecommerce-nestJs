@@ -1,6 +1,8 @@
 import { Role } from 'src/roles/entities/role.entity';
 import { UserDetail } from 'src/user-details/entities/user-detail.entity';
 import {
+  BeforeInsert,
+  BeforeUpdate,
   Column,
   CreateDateColumn,
   Entity,
@@ -9,6 +11,7 @@ import {
   OneToMany,
   PrimaryGeneratedColumn,
 } from 'typeorm';
+import * as bcrypt from 'bcrypt';
 
 @Entity({ name: 'user' })
 export class User {
@@ -18,7 +21,7 @@ export class User {
   @Column({ unique: true, type: 'varchar' })
   email: string;
 
-  @Column()
+  @Column({ select: false })
   password: string;
 
   @Column({ type: 'bool', default: true })
@@ -33,4 +36,13 @@ export class User {
 
   @OneToMany(() => User, (user) => user.userDetail)
   userDetail: UserDetail[];
+
+  @BeforeInsert()
+  @BeforeUpdate()
+  async hasPassword() {
+    if (!this.password) {
+      return;
+    }
+    this.password = await bcrypt.hash(this.password, 10);
+  }
 }

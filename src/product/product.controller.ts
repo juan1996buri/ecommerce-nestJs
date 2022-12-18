@@ -8,9 +8,13 @@ import {
   Controller,
   Get,
   Query,
+  UseGuards,
 } from '@nestjs/common';
 import { ProductService } from './product.service';
 import { CreateProductDto, PaginationQueryDto, UpdateProductDto } from './dto';
+import { RolesGuard } from 'src/roles/guard/roles.guard';
+import { JwtAuthGuard } from 'src/auth/guard/jwt-auth.guard';
+import { Roles } from 'src/roles/decorator/roles.decorator';
 
 @Controller('product')
 export class ProductController {
@@ -21,7 +25,9 @@ export class ProductController {
     return await this.productService.create(createProductDto);
   }
 
-  @Get()
+  @Roles('ADMIN')
+  @UseGuards(JwtAuthGuard, RolesGuard)
+  @Get('getAllProduct')
   async findAll(@Query() pagination: PaginationQueryDto) {
     pagination.limit = pagination.limit > 100 ? 100 : pagination.limit;
     pagination.route = `http://localhost:4000/product?category=${pagination.category}`;

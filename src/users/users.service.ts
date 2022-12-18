@@ -17,6 +17,7 @@ export class UsersService {
 
   async create(createUserDto: CreateUserDto) {
     const role = await this.rolesRepository.findOneBy({ id: 2 });
+
     const newUser = this.userRepository.create({
       ...createUserDto,
       role,
@@ -33,7 +34,14 @@ export class UsersService {
   }
 
   async findOne(email: string) {
-    const user = await this.userRepository.findOneBy({ email });
+    const user = await this.userRepository
+      .createQueryBuilder('user')
+      .innerJoinAndSelect('user.role', 'role')
+      .addSelect('user.password')
+      .where('user.email = :email', { email })
+      .getOne();
+
+    console.log(user);
     if (!user) {
       throw new NotFoundException('User Not Found');
     }
