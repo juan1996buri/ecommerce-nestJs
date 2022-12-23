@@ -1,4 +1,11 @@
-import { IsNotEmpty, IsNumber, IsOptional, IsString } from 'class-validator';
+import {
+  IsInt,
+  IsNotEmpty,
+  IsNumber,
+  IsOptional,
+  IsPositive,
+  IsString,
+} from 'class-validator';
 import { CreateCategoryDto } from 'src/category/dto/create-category.dto';
 
 export class CreateProductDto {
@@ -11,12 +18,20 @@ export class CreateProductDto {
 
   @IsNotEmpty()
   @IsNumber()
+  @IsPositive()
   price: number;
+
+  @IsOptional()
+  @IsString()
+  image: string;
 
   @IsNotEmpty()
   @IsNumber()
+  @IsPositive()
+  @IsInt()
   stock: number;
 
+  @IsOptional()
   @IsString()
   description: string;
 

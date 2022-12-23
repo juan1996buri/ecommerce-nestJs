@@ -41,7 +41,6 @@ export class UsersService {
       .where('user.email = :email', { email })
       .getOne();
 
-    console.log(user);
     if (!user) {
       throw new NotFoundException('User Not Found');
     }

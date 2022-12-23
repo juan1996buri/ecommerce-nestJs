@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, BadRequestException } from '@nestjs/common';
 import { NotFoundException } from '@nestjs/common/exceptions';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Category } from 'src/category/entities/category.entity';
@@ -7,6 +7,7 @@ import { CreateProductDto, PaginationQueryDto, UpdateProductDto } from './dto';
 import { Product } from './entities/product.entity';
 
 import { paginate } from 'nestjs-typeorm-paginate';
+import { CloudinaryService } from 'src/cloudinary/cloudinary.service';
 
 @Injectable()
 export class ProductService {
@@ -15,14 +16,25 @@ export class ProductService {
     private readonly productRepository: Repository<Product>,
     @InjectRepository(Category)
     private readonly categoryRepository: Repository<Category>,
+    private cloudinary: CloudinaryService,
   ) {}
-  async create(createProductDto: CreateProductDto) {
+  async create(createProductDto: CreateProductDto, file: Express.Multer.File) {
+    let image;
+    if (file) image = await this.uploadImageToCloudinary(file);
+    if (image?.url) createProductDto.image = image.url;
+
     const category = await this.findOneCategory(createProductDto.category.id);
     const newProduct = this.productRepository.create({
       ...createProductDto,
       category,
     });
     return await this.productRepository.save(newProduct);
+  }
+
+  async uploadImageToCloudinary(file: Express.Multer.File) {
+    return await this.cloudinary.uploadImage(file, 'productsList').catch(() => {
+      throw new BadRequestException('Invalid file type.');
+    });
   }
 
   async findAll(pagination: PaginationQueryDto) {

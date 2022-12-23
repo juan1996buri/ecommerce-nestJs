@@ -5,7 +5,7 @@ import { CategoryService } from './category.service';
 import { CreateCategoryDto } from './dto/create-category.dto';
 import { UpdateCategoryDto } from './dto/update-category.dto';
 
-@Controller('category')
+@Controller('api/category')
 export class CategoryController {
   constructor(private readonly categoryService: CategoryService) {}
 
@@ -21,11 +21,11 @@ export class CategoryController {
 
   @Get()
   async findAll() {
-    const allCategories = await this.categoryService.findAll();
+    const categories = await this.categoryService.findAll();
     return {
       statusCode: HttpStatus.OK,
       message: 'categories fetched successfull',
-      allCategories,
+      categories,
     };
   }
 
