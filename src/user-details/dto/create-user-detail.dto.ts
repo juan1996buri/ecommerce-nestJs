@@ -12,7 +12,7 @@ export class CreateUserDetailDto {
 
   @IsString()
   @IsNotEmpty()
-  lasName: string;
+  lastName: string;
 
   @IsNotEmpty()
   user: CreateUserDto;

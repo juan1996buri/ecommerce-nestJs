@@ -1,6 +1,6 @@
-import { IsBoolean, IsNotEmpty, IsNumber, IsOptional } from 'class-validator';
+import { IsNotEmpty, IsNumber, IsOptional } from 'class-validator';
 import { CreateProductDto } from 'src/product/dto/create-product.dto';
-import { CreateUserDetailDto } from 'src/user-details/dto/create-user-detail.dto';
+import { CreateUserDto } from 'src/users/dto/create-user.dto';
 
 export class CreateFavoriteDto {
   @IsOptional()
@@ -8,12 +8,8 @@ export class CreateFavoriteDto {
   id: number;
 
   @IsNotEmpty()
-  @IsBoolean()
-  state: boolean;
-
-  @IsNotEmpty()
   product: CreateProductDto;
 
   @IsNotEmpty()
-  userDetail: CreateUserDetailDto;
+  user: CreateUserDto;
 }

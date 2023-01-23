@@ -12,7 +12,7 @@ import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
 import { HttpStatus } from '@nestjs/common/enums';
 
-@Controller('users')
+@Controller('api/users')
 export class UsersController {
   constructor(private readonly usersService: UsersService) {}
 
@@ -21,7 +21,7 @@ export class UsersController {
     const user = await this.usersService.create(createUserDto);
     return {
       statusCode: HttpStatus.OK,
-      message: 'user created successfull',
+      message: 'Usuario creado con exito',
       user,
     };
   }

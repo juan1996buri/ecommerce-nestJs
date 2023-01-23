@@ -22,7 +22,7 @@ import { AuthModule } from './auth/auth.module';
       port: 3306,
       username: 'root',
       password: 'admin',
-      database: 'ecommercebd',
+      database: 'ecommerce',
       entities: [Role],
       synchronize: true,
       autoLoadEntities: true,

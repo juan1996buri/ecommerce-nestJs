@@ -6,22 +6,28 @@ import {
   Put,
   Param,
   Delete,
+  UseGuards,
 } from '@nestjs/common';
 import { FavoritesService } from './favorites.service';
 import { CreateFavoriteDto } from './dto/create-favorite.dto';
 import { UpdateFavoriteDto } from './dto/update-favorite.dto';
 import { HttpStatus } from '@nestjs/common/enums';
+import { Roles } from 'src/roles/decorator/roles.decorator';
+import { JwtAuthGuard } from 'src/auth/guard/jwt-auth.guard';
+import { RolesGuard } from 'src/roles/guard/roles.guard';
 
-@Controller('favorites')
+@Controller('api/favorites')
 export class FavoritesController {
   constructor(private readonly favoritesService: FavoritesService) {}
 
+  @Roles('ADMIN', 'CLIENT')
+  @UseGuards(JwtAuthGuard, RolesGuard)
   @Post()
   async create(@Body() createFavoriteDto: CreateFavoriteDto) {
     const favorite = await this.favoritesService.create(createFavoriteDto);
     return {
       statusCode: HttpStatus.OK,
-      message: 'Favorite created successfull',
+      message: 'Producto agregado a favoritos',
       favorite,
     };
   }
@@ -36,22 +42,15 @@ export class FavoritesController {
     };
   }
 
-  @Get(':id')
-  async findOne(@Param('id') id: number) {
-    const favorite = await this.favoritesService.findOne(id);
+  @Get(':productId/:userId')
+  async findOne(
+    @Param('productId') productId: number,
+    @Param('userId') userId: number,
+  ) {
+    const favorite = await this.favoritesService.findOne(productId, userId);
     return {
       statusCode: HttpStatus.OK,
-      message: 'Favorite fetched successfull',
-      favorite,
-    };
-  }
-
-  @Put()
-  async update(@Body() updateFavoriteDto: UpdateFavoriteDto) {
-    const favorite = await this.favoritesService.update(updateFavoriteDto);
-    return {
-      statusCode: HttpStatus.OK,
-      message: 'Favorite updated successfull',
+      message: 'Producto agregado a favoritos',
       favorite,
     };
   }
@@ -61,7 +60,7 @@ export class FavoritesController {
     await this.favoritesService.remove(id);
     return {
       statusCode: HttpStatus.OK,
-      message: 'Favorite deleted successfull',
+      message: 'Producto eliminado de favoritos',
     };
   }
 }

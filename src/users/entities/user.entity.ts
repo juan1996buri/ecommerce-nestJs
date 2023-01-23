@@ -12,6 +12,7 @@ import {
   PrimaryGeneratedColumn,
 } from 'typeorm';
 import * as bcrypt from 'bcrypt';
+import { Favorite } from 'src/favorites/entities/favorite.entity';
 
 @Entity({ name: 'user' })
 export class User {
@@ -45,4 +46,7 @@ export class User {
     }
     this.password = await bcrypt.hash(this.password, 10);
   }
+
+  @OneToMany(() => Favorite, (favorite) => favorite.user)
+  favorite: Favorite[];
 }

@@ -13,9 +13,7 @@ export class UserDetailsService {
     private readonly userDetailRepository: Repository<UserDetail>,
   ) {}
   async create(createUserDetailDto: CreateUserDetailDto) {
-    const userDetail = await this.userDetailRepository.create(
-      createUserDetailDto,
-    );
+    const userDetail = this.userDetailRepository.create(createUserDetailDto);
     return await this.userDetailRepository.save(userDetail);
   }
 

@@ -12,7 +12,7 @@ import {
   Put,
 } from '@nestjs/common/decorators';
 
-@Controller('user-details')
+@Controller('api/user-details')
 export class UserDetailsController {
   constructor(private readonly userDetailsService: UserDetailsService) {}
 

@@ -59,6 +59,8 @@ export class ProductController {
     };
   }
 
+  @Roles('ADMIN')
+  @UseGuards(JwtAuthGuard, RolesGuard)
   @Delete(':id')
   async remove(@Param('id') id: number) {
     await this.productService.remove(id);

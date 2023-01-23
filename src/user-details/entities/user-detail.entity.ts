@@ -20,7 +20,7 @@ export class UserDetail {
   name: string;
 
   @Column()
-  lasName: string;
+  lastName: string;
 
   @ManyToOne(() => User, (user) => user.userDetail)
   @JoinColumn({ name: 'id_user' })
@@ -28,9 +28,6 @@ export class UserDetail {
 
   @OneToMany(() => Order, (order) => order.userDetail)
   order: Order[];
-
-  @OneToMany(() => Favorite, (favorite) => favorite.userDetail)
-  favorite: Favorite[];
 
   @OneToMany(() => View, (view) => view.userDetail)
   view: View;

@@ -1,20 +1,19 @@
 import { Product } from 'src/product/entities/product.entity';
 import { UserDetail } from 'src/user-details/entities/user-detail.entity';
+import { User } from 'src/users/entities/user.entity';
 import {
-  Column,
   Entity,
+  Index,
   JoinColumn,
   ManyToOne,
   PrimaryGeneratedColumn,
 } from 'typeorm';
 
 @Entity({ name: 'favorite' })
+@Index(['product', 'user'], { unique: true })
 export class Favorite {
   @PrimaryGeneratedColumn()
   id: number;
-
-  @Column()
-  state: boolean;
 
   @ManyToOne(() => Product, (product) => product.favorite, {
     eager: true,
@@ -23,10 +22,10 @@ export class Favorite {
   @JoinColumn({ name: 'id_product' })
   product: Product;
 
-  @ManyToOne(() => UserDetail, (userDetail) => userDetail.favorite, {
+  @ManyToOne(() => User, (user) => user.favorite, {
     eager: true,
     nullable: false,
   })
-  @JoinColumn({ name: 'id_userDetail' })
-  userDetail: UserDetail;
+  @JoinColumn({ name: 'id_user' })
+  user: User;
 }

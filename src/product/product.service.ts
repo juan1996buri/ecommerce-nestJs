@@ -14,20 +14,13 @@ export class ProductService {
   constructor(
     @InjectRepository(Product)
     private readonly productRepository: Repository<Product>,
-    @InjectRepository(Category)
-    private readonly categoryRepository: Repository<Category>,
     private cloudinary: CloudinaryService,
   ) {}
   async create(createProductDto: CreateProductDto, file: Express.Multer.File) {
     let image;
     if (file) image = await this.uploadImageToCloudinary(file);
     if (image?.url) createProductDto.image = image.url;
-
-    const category = await this.findOneCategory(createProductDto.category.id);
-    const newProduct = this.productRepository.create({
-      ...createProductDto,
-      category,
-    });
+    const newProduct = this.productRepository.create(createProductDto);
     return await this.productRepository.save(newProduct);
   }
 
@@ -56,26 +49,12 @@ export class ProductService {
 
   async update(updateProductDto: UpdateProductDto) {
     const oldProduct = await this.findOne(updateProductDto.id);
-    const category = await this.findOneCategory(updateProductDto.category.id);
-    const newProduct = Object.assign(oldProduct, {
-      ...updateProductDto,
-      category,
-    });
+    const newProduct = Object.assign(oldProduct, updateProductDto);
     return await this.productRepository.save(newProduct);
   }
 
   async remove(id: number) {
     const product = await this.findOne(id);
     this.productRepository.remove(product);
-  }
-
-  async findOneCategory(id: number) {
-    const category = await this.categoryRepository.findOneBy({
-      id,
-    });
-    if (!category) {
-      throw new NotFoundException('Category Not Found');
-    }
-    return category;
   }
 }
